@@ -12,7 +12,8 @@ class ViewController: UIViewController, WKNavigationDelegate {
     var webView: WKWebView!
     var progressView: UIProgressView!
     
-    var websites = ["apple.com", "hackingwithswift.com"]
+    var websites = ["apple.com", "hackingwithswift.com", "baidu.com"]
+    var website: String!
     
     var handler: ((WKNavigationActionPolicy) -> Void)!
     
@@ -22,17 +23,21 @@ class ViewController: UIViewController, WKNavigationDelegate {
         webView = WKWebView()
         view = webView
         
-        webView.navigationDelegate = self
-        let url = URL(string: "https://www.baidu.com")!
-        let request = URLRequest(url: url)
-        
-        webView.load(request)
         webView.allowsBackForwardNavigationGestures = true
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        title = "Projct4"
+
+        
+        webView.navigationDelegate = self
+        let url = URL(string: "https://www." + website)!
+        let request = URLRequest(url: url)
+        
+        webView.load(request)
+
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Open", style: .plain, target: self, action: #selector(openTapped))
         popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
@@ -45,6 +50,9 @@ class ViewController: UIViewController, WKNavigationDelegate {
         webView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
         
         toolbarItems = [
+            
+            UIBarButtonItem(image: UIImage(systemName: "chevron.left"), style: .plain, target: webView, action: #selector(webView.goBack)),
+            UIBarButtonItem(image: UIImage(systemName: "chevron.right"), style: .plain, target: webView, action: #selector(webView.goForward)),
             UIBarButtonItem(customView: progressView),
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             UIBarButtonItem(barButtonSystemItem: .refresh, target: webView, action: #selector(webView.reload))
@@ -69,7 +77,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
     
     func alertHandler(sender: UIAlertAction) {
         guard let title = sender.title else { return }
-        guard let url = URL(string: "https://" + title) else { return }
+        guard let url = URL(string: "https://www." + title) else { return }
         webView.load(URLRequest(url: url))
     }
 
@@ -78,17 +86,34 @@ class ViewController: UIViewController, WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        // Use escaping closure
-        handler = decisionHandler
         
-        let ac = UIAlertController(title: "Continue?", message: navigationAction.request.url?.host, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
-            self.handler(.allow)
-        }))
-        ac.addAction(UIAlertAction(title: "No", style: .default, handler: { _ in
-            self.handler(.cancel)
-        }))
-        present(ac, animated: true, completion: nil)
+        let url = navigationAction.request.url
+        
+        if let host = url?.host {
+            for website in websites {
+                if host.contains(website) {
+                    decisionHandler(.allow)
+                    return
+                }
+            }
+        }
+        
+        decisionHandler(.cancel)
+        let ac = UIAlertController(title: "Blocked", message: "The website \(url?.host ?? "") is not allowed!", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        present(ac, animated: true)
+        
+//        // Use escaping closure
+//        handler = decisionHandler
+//
+//        let ac = UIAlertController(title: "Continue?", message: navigationAction.request.url?.host, preferredStyle: .alert)
+//        ac.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+//            self.handler(.allow)
+//        }))
+//        ac.addAction(UIAlertAction(title: "No", style: .default, handler: { _ in
+//            self.handler(.cancel)
+//        }))
+//        present(ac, animated: true, completion: nil)
         
     }
 }

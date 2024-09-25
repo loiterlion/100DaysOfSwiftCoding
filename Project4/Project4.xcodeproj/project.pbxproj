@@ -13,6 +13,7 @@
 		32030A872CA28E8200C91341 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32030A852CA28E8200C91341 /* Main.storyboard */; };
 		32030A892CA28E8500C91341 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32030A882CA28E8500C91341 /* Assets.xcassets */; };
 		32030A8C2CA28E8500C91341 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32030A8A2CA28E8500C91341 /* LaunchScreen.storyboard */; };
+		32DD3A342CA3E5BF00992BD0 /* RootTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DD3A332CA3E5BF00992BD0 /* RootTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		32030A882CA28E8500C91341 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		32030A8B2CA28E8500C91341 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		32030A8D2CA28E8500C91341 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32DD3A332CA3E5BF00992BD0 /* RootTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			children = (
 				32030A7F2CA28E8200C91341 /* AppDelegate.swift */,
 				32030A812CA28E8200C91341 /* SceneDelegate.swift */,
+				32DD3A332CA3E5BF00992BD0 /* RootTableViewController.swift */,
 				32030A832CA28E8200C91341 /* ViewController.swift */,
 				32030A852CA28E8200C91341 /* Main.storyboard */,
 				32030A882CA28E8500C91341 /* Assets.xcassets */,
@@ -141,6 +144,7 @@
 				32030A842CA28E8200C91341 /* ViewController.swift in Sources */,
 				32030A802CA28E8200C91341 /* AppDelegate.swift in Sources */,
 				32030A822CA28E8200C91341 /* SceneDelegate.swift in Sources */,
+				32DD3A342CA3E5BF00992BD0 /* RootTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
