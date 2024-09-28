@@ -100,7 +100,7 @@ class ViewController: UITableViewController {
             return
         }
         
-        usedWords.insert(answer, at: 0)
+        usedWords.insert(lowercased, at: 0)
         tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
 
