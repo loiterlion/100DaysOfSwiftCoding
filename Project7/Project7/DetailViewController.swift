@@ -34,7 +34,11 @@ class DetailViewController: UIViewController {
             <html>
             <head>
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <style> body { font-size: 150%; } </style>
+            <style> body {color: blue; font-size: 150%; background-color: #f0f0f0;}
+            h1 {
+                color: blue;
+            }
+            </style>
             </head>
             <body>
             \(detailItem.body ?? "empty")
