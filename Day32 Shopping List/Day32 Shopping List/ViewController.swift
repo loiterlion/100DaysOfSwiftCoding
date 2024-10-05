@@ -19,7 +19,7 @@ class ViewController: UITableViewController {
         
         self.navigationItem.rightBarButtonItems = [
             UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped)),
-            UIBarButtonItem(barButtonSystemItem: .add, target: self, ac tion: #selector(showPrompt))
+            UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showPrompt))
         ]
     }
     
