@@ -172,10 +172,16 @@ class ViewController: UIViewController {
                 
                 present(ac, animated: true)
             }
-            
-            
-            
-            // show alertView
+        } else {
+            let ac = UIAlertController(title: "Oops", message: "Try again:)", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default, handler: {[unowned self] _ in
+                for button in activatedButtons {
+                    button.isHidden = false
+                }
+                activatedButtons.removeAll()
+                currentAnswer.text = ""
+            }))
+            present(ac, animated: true)
         }
     }
     
