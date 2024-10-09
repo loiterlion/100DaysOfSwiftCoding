@@ -16,6 +16,11 @@ class ViewController: UIViewController {
     
     var activatedButtons = [UIButton]()
     var usedButtons = [UIButton]()
+    
+    var isLevelCompleted: Bool  {
+        usedButtons.count == 20
+    }
+    
     var solutions = [String]()
     
     var score: Int = 0 {
@@ -165,14 +170,16 @@ class ViewController: UIViewController {
             splittedAnswers![index] = answer
             answersLabel.text = splittedAnswers?.joined(separator: "\n")
             
-            if score % 7 == 0 {
+            if isLevelCompleted {
                 
-                let ac = UIAlertController(title: "Congrats", message: "Correct answer", preferredStyle: .alert)
+                let ac = UIAlertController(title: "Level Completed!!!", message: "Try next level?", preferredStyle: .alert)
                 ac.addAction(UIAlertAction(title: "OK", style: .default, handler: nextLevel))
                 
                 present(ac, animated: true)
             }
         } else {
+            score -= 1
+            
             let ac = UIAlertController(title: "Oops", message: "Try again:)", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: {[unowned self] _ in
                 for button in activatedButtons {
