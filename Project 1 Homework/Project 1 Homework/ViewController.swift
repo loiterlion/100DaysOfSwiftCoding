@@ -10,19 +10,31 @@ import UIKit
 class ViewController: UITableViewController {
     var imageNames = [String]()
 
+    fileprivate func loadPhotos() {
+        DispatchQueue.global(qos: .default).async { [weak self] in
+            guard let self = self else { return }
+            let resourcePath = Bundle.main.resourcePath!
+            self.imageNames = try! FileManager.default.contentsOfDirectory(atPath: resourcePath + "/Content")
+            self.imageNames = self.imageNames.sorted(by: <)
+            
+            DispatchQueue.main.async { [weak self] in
+                print("tableView reload data")
+                self?.tableView.reloadData()
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         title = "View Storm"
         
-        let resourcePath = Bundle.main.resourcePath!
-        imageNames = try! FileManager.default.contentsOfDirectory(atPath: resourcePath + "/Content")
-        imageNames = imageNames.sorted(by: <)
-        print(imageNames)
+        loadPhotos()
         
         navigationController?.navigationBar.prefersLargeTitles = true
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareApp))
+        print("view did load")
     }
     
     @objc func shareApp() {

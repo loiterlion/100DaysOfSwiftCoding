@@ -14,12 +14,20 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .yellow
         // Do any additional setup after loading the view.
-        DispatchQueue.global(qos: .default).async { [weak self] in
-            sleep(5)
-            if let num = self?.num {
-                print(num)
-            }
-        }
+        
+        performSelector(inBackground: #selector(timeConsumingAction), with: nil)
+        
+//        DispatchQueue.global(qos: .default).async { [weak self] in
+//            sleep(5)
+//            if let num = self?.num {
+//                print(num)
+//            }
+//        }
+    }
+    
+    @objc func timeConsumingAction() {
+        sleep(5)
+        print(num)
     }
     
     deinit {
