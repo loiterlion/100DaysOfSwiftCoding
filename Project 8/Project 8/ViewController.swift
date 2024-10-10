@@ -63,7 +63,7 @@ class ViewController: UIViewController {
         currentAnswer = UITextField()
         currentAnswer.translatesAutoresizingMaskIntoConstraints = false
         currentAnswer.placeholder = "Tap letters to guess"
-        currentAnswer.textAlignment = .right
+        currentAnswer.textAlignment = .center
         currentAnswer.font = UIFont.systemFont(ofSize: 48)
         currentAnswer.isUserInteractionEnabled = false
         view.addSubview(currentAnswer)
@@ -216,39 +216,43 @@ class ViewController: UIViewController {
     }
     
     func loadLevel() {
-        guard let urlString = Bundle.main.path(forResource: "level\(level)", ofType: "txt") else { return }
-        if let content = try? String(contentsOfFile: urlString) {
-            var lines = content.components(separatedBy: "\n")
-            lines.shuffle()
-            
-            var clues = [String]()
-            var wordCountString = [String]()
-            var wordBits = [String]()
-            
-            for (index, line) in lines.enumerated() {
-                print("\(index)" + "\(line)")
-                let parts = line.components(separatedBy: ": ")
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            guard let urlString = Bundle.main.path(forResource: "level\(self.level)", ofType: "txt") else { return }
+            if let content = try? String(contentsOfFile: urlString) {
+                var lines = content.components(separatedBy: "\n")
+                lines.shuffle()
                 
-                let wordBit = parts[0].components(separatedBy: "|")
-                wordBits += wordBit
+                var clues = [String]()
+                var wordCountString = [String]()
+                var wordBits = [String]()
                 
-                let answer = parts[0].replacingOccurrences(of: "|", with: "")
+                for (index, line) in lines.enumerated() {
+                    print("\(index)" + "\(line)")
+                    let parts = line.components(separatedBy: ": ")
+                    
+                    let wordBit = parts[0].components(separatedBy: "|")
+                    wordBits += wordBit
+                    
+                    let answer = parts[0].replacingOccurrences(of: "|", with: "")
+                    
+                    self.solutions.append(answer)
+                    
+                    clues.append("\(index + 1) \(parts[1])")
+                    wordCountString.append("\(answer.count) letters")
+                }
                 
-                solutions.append(answer)
-                
-                clues.append("\(index + 1) \(parts[1])")
-                wordCountString.append("\(answer.count) letters")
-            }
-            
-            cluesLabel.text = clues.joined(separator: "\n")
-            answersLabel.text = wordCountString.joined(separator: "\n")
-            wordBits.shuffle()
-            
-            for (index, item) in letterButtons.enumerated() {
-                item.setTitle(wordBits[index], for: .normal)
+                DispatchQueue.main.async {
+                    self.cluesLabel.text = clues.joined(separator: "\n")
+                    self.answersLabel.text = wordCountString.joined(separator: "\n")
+                    wordBits.shuffle()
+                    
+                    for (index, item) in self.letterButtons.enumerated() {
+                        item.setTitle(wordBits[index], for: .normal)
+                    }
+                }
             }
         }
-        
     }
 }
 
