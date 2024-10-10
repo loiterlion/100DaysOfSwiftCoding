@@ -11,6 +11,7 @@ class ViewController: UITableViewController {
     var petitions = [Petition]()
     var filterdPetitions = [Petition]()
     var isFiltered = false
+    var alertController: UIAlertController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,18 +50,10 @@ class ViewController: UITableViewController {
         ]
     }
     
-    @objc func searchBBITapped() {
-        if isFiltered {
-            isFiltered = false
-            filterdPetitions = petitions
-            tableView.reloadData()
-            return
-        }
-
-        let ac = UIAlertController(title: "filter", message: "Input filter words", preferredStyle: .alert)
-        ac.addTextField()
-        ac.addAction(UIAlertAction(title: "Cancel", style: .destructive))
-        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { [unowned self] _ in
+    fileprivate func filterTapped(_ ac: UIAlertAction) {
+        guard let ac = alertController else { return }
+        DispatchQueue.global(qos: .default).async {
+            [unowned self] in
             guard let text = ac.textFields?[0].text else { return }
             
             filterdPetitions.removeAll(keepingCapacity: true)
@@ -77,8 +70,25 @@ class ViewController: UITableViewController {
             }
             
             isFiltered = true
+            DispatchQueue.main.async {
+                tableView.reloadData()
+            }
+        }
+    }
+    
+    @objc func searchBBITapped() {
+        if isFiltered {
+            isFiltered = false
+            filterdPetitions = petitions
             tableView.reloadData()
-        }))
+            return
+        }
+
+        let ac = UIAlertController(title: "filter", message: "Input filter words", preferredStyle: .alert)
+        ac.addTextField()
+        ac.addAction(UIAlertAction(title: "Cancel", style: .destructive))
+        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: filterTapped))
+        alertController = ac
         
         present(ac, animated: true)
     }
