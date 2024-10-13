@@ -1,0 +1,7 @@
+apple
+banana
+pear
+pineapple
+manderin
+kiwifruit
+watermelon
