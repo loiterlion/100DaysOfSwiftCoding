@@ -9,9 +9,15 @@ import UIKit
 
 class ViewController: UIViewController {
     var quizLabel: UILabel!
+    var allKeyButtons = [UIButton]()
+    
+    
     var quizWord = ""
+    var wordToShow = ""
+    var usedLetters = [String]()
     var allWords = [String]()
-    var tapCount = 0
+    var trialTimeLeft = 7
+    
     
     override func loadView() {
         view = UIView()
@@ -19,11 +25,11 @@ class ViewController: UIViewController {
         let alphabets = Array("abcedfghijklmnopqrstuvwxyz")
         
         let quizLabel = UILabel()
-        quizLabel.text = "Apple"
+        quizLabel.text = ""
         quizLabel.textAlignment = .center
-        quizLabel.font = .systemFont(ofSize: 20)
+        quizLabel.font = .systemFont(ofSize: 40)
         quizLabel.translatesAutoresizingMaskIntoConstraints = false
-        quizLabel.backgroundColor = .gray
+        
         view.addSubview(quizLabel)
         self.quizLabel = quizLabel
         
@@ -45,6 +51,7 @@ class ViewController: UIViewController {
             button.frame = CGRect(x: (i % 10) * (width + 2), y: (i / 10) * (height + 2), width: width, height: height)
             button.addTarget(self, action: #selector(letterTapped), for: .touchUpInside)
             buttonsView.addSubview(button)
+            allKeyButtons.append(button)
         }
         
         NSLayoutConstraint.activate([
@@ -53,9 +60,10 @@ class ViewController: UIViewController {
             quizLabel.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor),
             quizLabel.heightAnchor.constraint(equalToConstant: 100),
             
-            buttonsView.widthAnchor.constraint(equalTo: view.layoutMarginsGuide.widthAnchor),
+            buttonsView.widthAnchor.constraint(equalToConstant: 300),
             buttonsView.heightAnchor.constraint(equalTo: view.layoutMarginsGuide.heightAnchor, multiplier: 0.5),
-            buttonsView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+//            buttonsView.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            buttonsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             buttonsView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20)
         ])
     }
@@ -63,66 +71,101 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.loadLetters()
+        loadLetters {
+            DispatchQueue.main.async { [weak self] in
+                self?.startGame()
+            }
         }
     }
 
     fileprivate func nextWord() {
         DispatchQueue.main.async { [unowned self] in
-            tapCount = 0
+            trialTimeLeft = 7
             quizWord = allWords.randomElement()!
             self.quizLabel.text = String(repeating: "?", count: self.quizWord.count)
         }
     }
     
-    func loadLetters() {
-        print("Loading letters from local file")
-        guard let urlString = Bundle.main.url(forResource: "quiz", withExtension: "txt") else { return }
-        guard let content = try? String(contentsOf: urlString) else { return }
-        allWords = content.components(separatedBy: "\n")
+    
+    func startGame() {
+        // reset data
+        quizWord = allWords.randomElement()!
+        trialTimeLeft = 7
+        wordToShow = ""
+        usedLetters.removeAll()
         
-        nextWord()
+        
+        // update UI
+        quizLabel.text = String(repeating: "_", count: quizWord.count)
+        for button in allKeyButtons {
+            button.isEnabled = true
+        }
+        title = "Trail time left: \(trialTimeLeft)"
     }
+    
+    func loadLetters(handler: @escaping () -> ()) {
+        DispatchQueue.global(qos: .userInitiated).async { [unowned self] in
 
+            print("Loading letters from local file")
+            guard let urlString = Bundle.main.url(forResource: "quiz", withExtension: "txt") else { return }
+            guard let content = try? String(contentsOf: urlString) else { return }
+            allWords = content.components(separatedBy: "\n")
+            
+            handler()
+        }
+    }
+    
     @objc func letterTapped(_ sender: UIButton) {
-        guard let labelText = quizLabel.text else { return }
+        // if letter is contained in the Word
         guard let letter = sender.titleLabel?.text else { return }
         
-        print(letter + " is tapped")
-        
-        let lettersInWord = Array(quizWord)
-        var lettersInLabel = Array(labelText)
-        
-        if !quizWord.contains(letter) {
-            tapCount += 1
-        }
-        if tapCount == 7 {
-            let ac = UIAlertController(title: "Fail", message: "You're tried 7 times.\n Correct word is \(quizWord)", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "Try next?", style: .default, handler: { [weak self]_ in
-                self?.nextWord()
-            }))
-            present(ac, animated: true)
+        if quizWord.contains(letter) {
+            usedLetters.append(letter)
+        } else {
+            // wrong letter
+            trialTimeLeft -= 1
         }
         
-        
-        for (index, ch) in lettersInWord.enumerated() {
-            if String(ch) == letter {
-                lettersInLabel[index] = ch
+        // update word to show
+        var tmpWord = ""
+        for letter in quizWord {
+            if usedLetters.contains(String(letter)) {
+                tmpWord.append(letter)
+            } else {
+                tmpWord.append("_")
             }
         }
+        wordToShow = tmpWord
+        sender.isEnabled = false
         
-        let joinedString = String(lettersInLabel)
-        quizLabel.text = joinedString
-        if quizLabel.text == quizWord {
-            let ac = UIAlertController(title: "Congrats", message: "correct", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "Try next?", style: .default, handler: { [weak self]_ in
-                self?.nextWord()
-            }))
-            present(ac, animated: true)
+        // update UI
+        updateUI()
+
+        // check win or lose and show
+        checkGameStatus()
+    }
+    
+    func updateUI() {
+        quizLabel.text = wordToShow
+        title = "Trail time left \(trialTimeLeft)"
+    }
+    
+    func checkGameStatus() {
+        if trialTimeLeft == 0 {
+            showGameResult(won: false)
+        } else if quizWord == wordToShow {
+            // show succeed alert
+            showGameResult(won: true)
         }
-        
-        
+    }
+    
+    func showGameResult(won: Bool) {
+        let ac = UIAlertController(title: won ? "Win" : "Lose",
+                                   message: won ? "Congrats" : "You lose, quizWord : [\(quizWord)]",
+                                   preferredStyle: UIAlertController.Style.alert)
+        ac.addAction(UIAlertAction(title: "Try next", style: .default, handler: { [weak self] _ in self?.startGame()
+        }))
+        present(ac,animated: true)
     }
 }
 
