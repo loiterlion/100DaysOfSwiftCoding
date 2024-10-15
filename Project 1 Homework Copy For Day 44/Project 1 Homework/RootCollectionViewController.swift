@@ -63,6 +63,11 @@ class RootCollectionViewController: UICollectionViewController {
         let imageName = imageNames[indexPath.item]
         cell.imageView.image = UIImage(named: imageName)
         cell.label.text = imageName
+        
+        cell.imageView.layer.cornerRadius = 3
+        cell.layer.borderWidth = 1
+        cell.layer.cornerRadius = 7
+        
     
         return cell
     }
