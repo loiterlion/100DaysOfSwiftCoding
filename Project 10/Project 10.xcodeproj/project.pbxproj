@@ -44,7 +44,6 @@
 		3267C7232CBBBB8E00480BAB = {
 			isa = PBXGroup;
 			children = (
-				32B16A722CBE09D2004231EF /* Person.swift */,
 				3267C72E2CBBBB8E00480BAB /* Project 10 */,
 				3267C72D2CBBBB8E00480BAB /* Products */,
 			);
@@ -65,6 +64,7 @@
 				3267C7312CBBBB8E00480BAB /* SceneDelegate.swift */,
 				3267C7332CBBBB8E00480BAB /* ViewController.swift */,
 				3267C7352CBBBB8E00480BAB /* Main.storyboard */,
+				32B16A722CBE09D2004231EF /* Person.swift */,
 				32B16A702CBCB2A2004231EF /* PersonCell.swift */,
 				3267C7382CBBBB9500480BAB /* Assets.xcassets */,
 				3267C73A2CBBBB9500480BAB /* LaunchScreen.storyboard */,
