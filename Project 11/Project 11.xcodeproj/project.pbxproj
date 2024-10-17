@@ -14,6 +14,7 @@
 		32BD73C92CBFA185003867AB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32BD73C72CBFA185003867AB /* Main.storyboard */; };
 		32BD73CB2CBFA18A003867AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32BD73CA2CBFA18A003867AB /* Assets.xcassets */; };
 		32BD73CE2CBFA18A003867AB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 32BD73CC2CBFA18A003867AB /* LaunchScreen.storyboard */; };
+		32BD73D72CC0F4DF003867AB /* FireParticles.sks in Resources */ = {isa = PBXBuildFile; fileRef = 32BD73D62CC0F4DF003867AB /* FireParticles.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		32BD73C82CBFA185003867AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		32BD73CA2CBFA18A003867AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		32BD73CD2CBFA18A003867AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		32BD73D62CC0F4DF003867AB /* FireParticles.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FireParticles.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 				32BD73C32CBFA185003867AB /* GameScene.swift */,
 				32BD73C52CBFA185003867AB /* GameViewController.swift */,
 				32BD73C72CBFA185003867AB /* Main.storyboard */,
+				32BD73D62CC0F4DF003867AB /* FireParticles.sks */,
 				32BD73CA2CBFA18A003867AB /* Assets.xcassets */,
 				32BD73CC2CBFA18A003867AB /* LaunchScreen.storyboard */,
 			);
@@ -128,6 +131,7 @@
 			files = (
 				32BD73C92CBFA185003867AB /* Main.storyboard in Resources */,
 				32BD73C02CBFA185003867AB /* GameScene.sks in Resources */,
+				32BD73D72CC0F4DF003867AB /* FireParticles.sks in Resources */,
 				32BD73CB2CBFA18A003867AB /* Assets.xcassets in Resources */,
 				32BD73CE2CBFA18A003867AB /* LaunchScreen.storyboard in Resources */,
 			);
