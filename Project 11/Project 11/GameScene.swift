@@ -11,6 +11,8 @@ import GameplayKit
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var scoreLabel: SKLabelNode!
     var editLabel: SKLabelNode!
+    var lifeLabel: SKLabelNode!
+    var boxes = [SKSpriteNode]()
     
     var editingMode = false
     
@@ -19,6 +21,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel.text = "Score: \(score)"
         }
     }
+    
+    
+    
+    var lifeCount = 5 {
+        didSet {
+            if lifeCount < 0 { lifeCount = 0 }
+            lifeLabel.text = "Life: \(lifeCount)"
+        }
+    }
+    var boxCount = 0
 
     fileprivate func makeBouncer(at position: CGPoint) {
         let bouncer = SKSpriteNode(imageNamed: "bouncer")
@@ -46,6 +58,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.position = CGPoint(x: 980, y: 700)
         addChild(scoreLabel)
         
+        lifeLabel = SKLabelNode(fontNamed: ChalkdusterFont)
+        lifeLabel.text = "Life: 5"
+        lifeLabel.horizontalAlignmentMode = .center
+        lifeLabel.position = CGPoint(x: 512, y: 700)
+        addChild(lifeLabel)
+        
         editLabel = SKLabelNode(fontNamed: ChalkdusterFont)
         editLabel.text = "Edit"
         editLabel.position = CGPoint(x: 80, y: 700)
@@ -62,16 +80,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         makeBouncer(at: CGPoint(x: 768, y: 0))
         makeBouncer(at: CGPoint(x: 1024, y: 0))
     
+        restartGame(action: nil)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-        let location = touch.location(in: self)
+        var location = touch.location(in: self)
         
         let objects = nodes(at: location)
         
         if objects.contains(editLabel) {
             editingMode.toggle()
+            if editingMode {
+                if boxes.count == 0 {
+                    let ac = UIAlertController(title: "No obstacles!", message: "At least one box should be added", preferredStyle: .alert)
+                    ac.addAction(UIAlertAction(title: "OK", style: .default))
+                    
+                    if let view = self.view, let viewController = view.window?.rootViewController {
+                        viewController.present(ac, animated: true, completion: nil)
+                    }
+                }
+            }
             editLabel.text  = editingMode ? "Done": "Edit"
         } else {
             if editingMode {
@@ -83,12 +112,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 box.position = location
                 box.physicsBody = SKPhysicsBody(rectangleOf: box.size)
                 box.physicsBody?.isDynamic = false
+                box.name = "box"
+                boxes.append(box)
+                boxCount += 1
                 addChild(box)
             } else {
-                let ball = SKSpriteNode(imageNamed: "ballRed")
+                let allBallImages = ["ballGrey", "ballCyan", "ballYellow", "ballRed", "ballGreen", "ballPurple"]
+                let ball = SKSpriteNode(imageNamed: allBallImages.randomElement()!)
                 ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width / 2.0)
                 ball.physicsBody?.restitution = 0.4
                 ball.physicsBody?.contactTestBitMask = ball.physicsBody?.collisionBitMask ?? 0
+                
+                location = CGPoint(x: location.x, y: 700)
                 ball.position = location
                 ball.name = "ball"
                 addChild(ball)
@@ -133,6 +168,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if object.name == "bad" {
             destroy(ball: ball)
             score -= 1
+            lifeCount -= 1
         }
     }
     
@@ -145,15 +181,66 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.removeFromParent()
     }
     
+    func destroy(box: SKNode) {
+        boxCount -= 1
+        box.removeFromParent()
+    }
+    
     func didBegin(_ contact: SKPhysicsContact) {
         guard let nodeA = contact.bodyA.node else { return }
         guard let nodeB = contact.bodyB.node else { return }
         
-        if contact.bodyA.node?.name == "ball" {
+        // Coz box can only be hit by ball. Whenever balls are hit, destroy balls
+        if nodeA.name == "box" {
+            destroy(box: nodeA)
+        } else if nodeB.name == "box" {
+            destroy(box: nodeB)
+        }
+        
+        //
+        if nodeA.name == "ball" {
             collison(between: nodeA, object: nodeB)
         } else if contact.bodyB.node?.name == "ball" {
             collison(between: nodeB, object: nodeA)
         }
+        
+        updateGameResult()
     }
     
+    func updateGameResult() {
+        if lifeCount == 0 {
+            // Game over!
+            for box in boxes {
+                box.removeFromParent()
+            }
+            showGameAlert(won: false)
+            
+        } else if boxCount == 0 {
+            // Win the game!
+            showGameAlert(won: true)
+        }
+    }
+    
+    func restartGame(action: UIAlertAction? = nil) {
+        lifeCount = 5
+        score = 0
+        
+        editLabel.text = "Done"
+        editingMode = true
+        
+        for box in boxes {
+            box.removeFromParent()
+        }
+        boxes.removeAll()
+        boxCount = 0
+    }
+    
+    func showGameAlert(won: Bool) {
+        let ac = UIAlertController(title: won ? "Congrats!" : "Game Over!", message: "Try again!", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Restart game", style: .default, handler: restartGame))
+        
+        if let view = self.view, let viewController = view.window?.rootViewController {
+            viewController.present(ac, animated: true, completion: nil)
+        }
+    }
 }
