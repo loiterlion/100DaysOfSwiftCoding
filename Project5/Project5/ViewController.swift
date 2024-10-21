@@ -10,6 +10,9 @@ import UIKit
 class ViewController: UITableViewController {
     var allWords: [String] = [String]()
     var usedWords: [String] = [String]()
+    var currentWord = ""
+    
+    var quizWordsSolutions = [String: [String]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +23,15 @@ class ViewController: UITableViewController {
         allWords = ["nothing"]
         
         if let content = try? String(contentsOf: url) {
-            allWords = content.components(separatedBy: "\n")
+            let trimmed = content.trimmingCharacters(in: .whitespacesAndNewlines)
+            allWords = trimmed.components(separatedBy: "\n")
+        }
+        
+        // load data from disk
+        if let savedData = UserDefaults.standard.object(forKey: "quizWordsSolutions") as? Data{
+            if let decoded = try? JSONDecoder().decode([String: [String]].self, from: savedData) {
+                quizWordsSolutions = decoded
+            }
         }
         
         startGame()
@@ -48,8 +59,15 @@ class ViewController: UITableViewController {
     }
     
     @objc func startGame() {
-        title = allWords.randomElement()
+        guard let randomWord = allWords.randomElement() else { fatalError("Error word empty")}
+        currentWord = randomWord
+        
+        title = randomWord
+        
         usedWords.removeAll(keepingCapacity: true)
+        if let solutions = quizWordsSolutions[randomWord.lowercased()] {
+            usedWords = solutions
+        }
         tableView.reloadData()
     }
 
@@ -101,7 +119,21 @@ class ViewController: UITableViewController {
         }
         
         usedWords.insert(lowercased, at: 0)
+
+        quizWordsSolutions[currentWord] = usedWords
+
+        save()
+        
         tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+    }
+    
+    func save() {
+        let defaults = UserDefaults.standard
+        if let encodedData = try? JSONEncoder().encode(quizWordsSolutions) {
+            defaults.setValue(encodedData, forKey: "quizWordsSolutions")
+        } else {
+            print("Error encode data!")
+        }
     }
 
     func isPossible(_ word: String) -> Bool {

@@ -15,8 +15,9 @@ class ViewController: UIViewController {
 
 	var countries = [String]()
 	var correctAnswer = 0
-	var score = 0
+    var score = 0
     var currentQuestion = 0
+    var highestScore = 0
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -33,6 +34,11 @@ class ViewController: UIViewController {
 //        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(showCurrentScore))
 
 		countries += ["estonia", "france", "germany", "ireland", "italy", "monaco", "nigeria", "poland", "russia", "spain", "uk", "us"]
+        
+        if let savedData = UserDefaults.standard.value(forKey: "highestScore") as? Int {
+            highestScore = savedData
+        }
+        
 		askQuestion()
         
 	}
@@ -58,7 +64,7 @@ class ViewController: UIViewController {
 		button3.setImage(UIImage(named: countries[2]), for: .normal)
 
         correctAnswer = Int.random(in: 0...2)
-		title = countries[correctAnswer].uppercased() + ", score:\(score)"
+		title = countries[correctAnswer].uppercased() + ", score:\(score), Highest: \(highestScore)"
         
 	}
 
@@ -94,9 +100,17 @@ class ViewController: UIViewController {
     
     func showFinalScore() {
         // show final score
-        let ac = UIAlertController(title: "Final Score", message: "Your final score is \(score).", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "Restart", style: .default, handler: askQuestion))
-        
-        present(ac, animated: true)
+        if score > highestScore {
+            let ac = UIAlertController(title: "New Record", message: "Final score: \(score)", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Restart", style: .default, handler: askQuestion))
+            present(ac, animated: true)
+            highestScore = score
+            UserDefaults.standard.setValue(highestScore, forKey: "highestScore")
+        } else {
+            let ac = UIAlertController(title: "Final Score", message: "Your final score is \(score).", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Restart", style: .default, handler: askQuestion))
+            
+            present(ac, animated: true)
+        }
     }
 }

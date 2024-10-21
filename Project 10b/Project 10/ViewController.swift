@@ -15,6 +15,13 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         // Do any additional setup after loading the view.
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewPerson))
+        
+        // Load data from disk
+        if let savedData = UserDefaults.standard.object(forKey: "people") as? Data {
+            if let decodedData = try? JSONDecoder().decode([Person].self, from: savedData) {
+                people = decodedData
+            }
+        }
     }
     
     @objc func addNewPerson() {
@@ -40,6 +47,9 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         
         let person = Person(name: "unknown", image: imageName)
         people.append(person)
+        
+        save()
+        
         collectionView.reloadData()
         
         dismiss(animated: true)
@@ -93,6 +103,8 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
             // remove from array
             self?.people.remove(at: indexPath.item)
             
+            self?.save()
+            
             // update ui
             collectionView.reloadData()
         }))
@@ -106,6 +118,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
                 
                 if let text = tf.text {
                     person.name = text
+                    self?.save()
                     self?.collectionView.reloadData()
                 }
             }))
@@ -116,7 +129,15 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         chooseAc.addAction(UIAlertAction(title: "Cancel", style: .default))
         
         present(chooseAc, animated: true)
-        
+    }
+    
+    func save() {
+        let encoder = JSONEncoder()
+        if let data = try? encoder.encode(people) {
+            UserDefaults.standard.setValue(data, forKey: "people")
+        } else {
+            print("Error save people")
+        }
     }
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32A75F352CC60F5C00DB6D49 /* QuizWord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A75F342CC60F5C00DB6D49 /* QuizWord.swift */; };
 		32DD3A422CA5A81A00992BD0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DD3A412CA5A81A00992BD0 /* AppDelegate.swift */; };
 		32DD3A442CA5A81A00992BD0 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DD3A432CA5A81A00992BD0 /* SceneDelegate.swift */; };
 		32DD3A462CA5A81A00992BD0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32DD3A452CA5A81A00992BD0 /* ViewController.swift */; };
@@ -17,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		32A75F342CC60F5C00DB6D49 /* QuizWord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizWord.swift; sourceTree = "<group>"; };
+		32A75F362CC6186200DB6D49 /* start copy.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "start copy.txt"; sourceTree = "<group>"; };
 		32DD3A3E2CA5A81A00992BD0 /* Project5.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Project5.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32DD3A412CA5A81A00992BD0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		32DD3A432CA5A81A00992BD0 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,9 +65,11 @@
 				32DD3A432CA5A81A00992BD0 /* SceneDelegate.swift */,
 				32DD3A452CA5A81A00992BD0 /* ViewController.swift */,
 				32DD3A472CA5A81A00992BD0 /* Main.storyboard */,
+				32A75F342CC60F5C00DB6D49 /* QuizWord.swift */,
 				32DD3A4A2CA5A82000992BD0 /* Assets.xcassets */,
 				32DD3A4C2CA5A82000992BD0 /* LaunchScreen.storyboard */,
 				32DD3A4F2CA5A82000992BD0 /* Info.plist */,
+				32A75F362CC6186200DB6D49 /* start copy.txt */,
 				32DD3A552CA5A83900992BD0 /* start.txt */,
 			);
 			path = Project5;
@@ -144,6 +149,7 @@
 			files = (
 				32DD3A462CA5A81A00992BD0 /* ViewController.swift in Sources */,
 				32DD3A422CA5A81A00992BD0 /* AppDelegate.swift in Sources */,
+				32A75F352CC60F5C00DB6D49 /* QuizWord.swift in Sources */,
 				32DD3A442CA5A81A00992BD0 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
