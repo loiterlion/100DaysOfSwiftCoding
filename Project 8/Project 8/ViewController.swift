@@ -152,7 +152,12 @@ class ViewController: UIViewController {
         
         currentAnswer.text?.append(buttonText)
         activatedButtons.append(sender)
-        sender.isHidden = true
+        
+        UIView.animate(withDuration: 2, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: []) {
+            sender.alpha = 0
+        } completion: { _ in
+    
+        }
     }
 
     @objc func submitTapped(_ sender: UIButton) {
@@ -183,7 +188,7 @@ class ViewController: UIViewController {
             let ac = UIAlertController(title: "Oops", message: "Try again:)", preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default, handler: {[unowned self] _ in
                 for button in activatedButtons {
-                    button.isHidden = false
+                    button.alpha = 1
                 }
                 activatedButtons.removeAll()
                 currentAnswer.text = ""
@@ -201,7 +206,7 @@ class ViewController: UIViewController {
         loadLevel()
         
         for button in letterButtons {
-            button.isHidden = false
+            button.alpha = 1
         }
     }
     
@@ -209,7 +214,7 @@ class ViewController: UIViewController {
         currentAnswer.text = ""
         
         for button in activatedButtons {
-            button.isHidden = false
+            button.alpha = 1
         }
         
         activatedButtons.removeAll()
