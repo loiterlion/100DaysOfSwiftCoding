@@ -32,6 +32,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
         let size = MemoryLayout.size(ofValue: context)
         print("Size of CIContext: \(size) bytes")
         currentFilter = CIFilter(name: "CISepiaTone")
+        
+        imageView.alpha = 0
     }
     
     @objc func showImagePicker() {
@@ -50,6 +52,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate & UINavi
         let beginImage = CIImage(image: currentImage!)
         currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
         applyProcessing()
+        
+        UIView.animate(withDuration: 1, delay: 1, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [.curveEaseIn]) { [weak self] in 
+            self?.imageView.alpha = 1
+        } completion: {_ in}
+
     }
     
     @IBAction func intensitychanged(_ sender: Any) {
