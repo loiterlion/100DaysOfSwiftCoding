@@ -84,9 +84,21 @@ class ViewController: UIViewController {
         
         currentQuestion += 1
         
-        let ac = UIAlertController(title: title, message: msg + " Your score is \(score).", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: continueTapped))
-        present(ac, animated: true)
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: []) {
+            sender.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        } completion: { [unowned self] finished in
+            let ac = UIAlertController(title: title, message: msg + " Your score is \(score).", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: { ac in
+                if currentQuestion != 10 {
+                    askQuestion()
+                } else {
+                    showFinalScore()
+                    resetGame()
+                }
+                sender.transform = CGAffineTransform.identity
+            }))
+            present(ac, animated: true)
+        }
 	}
 
     func continueTapped(action: UIAlertAction! = nil) {
