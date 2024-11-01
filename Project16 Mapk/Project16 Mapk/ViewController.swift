@@ -5,6 +5,7 @@
 //  Created by Bruce on 2024/10/31.
 //
 
+import Contacts
 import MapKit
 import UIKit
 
@@ -46,8 +47,72 @@ class ViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Map Type", style: .plain, target: self, action: #selector(chooseMapType))
+        
         addAnnotations()
+        
+        let searchBBI = UIBarButtonItem(title: "Search", style: .plain, target: self, action: #selector(searchAddress))
+        let chooseMapTypeBBI = UIBarButtonItem(title: "Map Type", style: .plain, target: self, action: #selector(chooseMapType))
+        let addRouteBBI = UIBarButtonItem(title: "Route", style: .plain, target: self, action: #selector(addRoute))
+        navigationItem.rightBarButtonItems = [searchBBI, chooseMapTypeBBI, addRouteBBI]
+        
+        let coords = CLLocationCoordinate2DMake(22.534964,113.922202)
+        
+        //176 Changxing Rd, Nanshan, Shenzhen, Guangdong Province, China, 518056
+        let address = [CNPostalAddressStreetKey: "176 Changxing Rd", CNPostalAddressCityKey: "Shenzhen", CNPostalAddressPostalCodeKey: "518056", CNPostalAddressISOCountryCodeKey: "CN"]
+        let place = MKPlacemark(coordinate: coords, addressDictionary: address)
+
+        mapView.addAnnotation(place)
+    }
+    
+    @objc func addRoute() {
+        // 1. remember to add Map Entitlement
+        // 2. ensure that google map is enabled in local network
+        
+        let request = MKDirections.Request()
+        
+        // 台北
+        request.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 25.0330, longitude: 121.5654), addressDictionary: nil))
+        
+        // 高雄 22.6273， 120.3014
+        request.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 22.6273, longitude: 120.3014), addressDictionary: nil))
+        request.requestsAlternateRoutes = false
+        request.transportType = .automobile
+
+        let directions = MKDirections(request: request)
+
+        directions.calculate { [unowned self] response, error in
+           guard let unwrappedResponse = response else { return }
+
+           for route in unwrappedResponse.routes {
+               self.mapView.addOverlay(route.polyline)
+               self.mapView.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
+           }
+        }
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+            let renderer = MKPolylineRenderer(polyline: overlay as! MKPolyline)
+            renderer.strokeColor = UIColor.orange
+            return renderer
+        }
+    
+    @objc func searchAddress() {
+        let searchRequest = MKLocalSearch.Request()
+        searchRequest.naturalLanguageQuery = "Shenzhen Music Hall, Shenzhen"
+        searchRequest.region = mapView.region
+        
+        let search = MKLocalSearch(request: searchRequest)
+        
+        search.start { response, error in
+            guard let response = response else {
+               print("Error: \(error?.localizedDescription ?? "Unknown error").")
+               return
+           }
+
+           for item in response.mapItems {
+               print(item.phoneNumber ?? "No phone number.")
+           }
+        }
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
