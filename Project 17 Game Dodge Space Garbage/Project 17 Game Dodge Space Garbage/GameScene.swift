@@ -16,6 +16,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var possibleEnemies = ["ball", "hammer", "tv"]
     var gameTimer: Timer?
     var isGameOver = false
+    
+    var timeDuration = 1.0
+    var count = 0
+    let nodeCountPerRound = 20
                            
     var score = 0 {
         didSet {
@@ -47,11 +51,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = .zero
         physicsWorld.contactDelegate = self
         
-        gameTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
+        gameTimer = Timer.scheduledTimer(timeInterval: timeDuration, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
+    }
+    
+    @objc func refreshTimer() {
+        gameTimer?.invalidate()
+        if count <= 0 {
+            isGameOver = true
+            return
+        }
+        
+        count -= 1
     }
     
     @objc func createEnemy() {
+        
         guard let enemy = possibleEnemies.randomElement() else { return }
+        
+        if count % nodeCountPerRound == 0 {
+            gameTimer?.invalidate()
+            
+            timeDuration -= 0.1
+            if timeDuration <= 0 {
+                isGameOver = true
+            }
+            
+            gameTimer =  Timer.scheduledTimer(timeInterval: timeDuration, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
+        }
         
         let sprite = SKSpriteNode(imageNamed: enemy)
         sprite.position = CGPoint(x: 1200, y: Int.random(in: 50...736))
@@ -63,6 +89,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         sprite.physicsBody?.angularVelocity = 5
         sprite.physicsBody?.linearDamping = 0
         sprite.physicsBody?.angularDamping = 0
+        
+        count += 1
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -93,8 +121,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        player.removeFromParent()
-        isGameOver = true
+//        player.removeFromParent()
+//        isGameOver = true
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -104,5 +132,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         player.removeFromParent()
         isGameOver = true
+        gameTimer?.invalidate()
     }
 }
