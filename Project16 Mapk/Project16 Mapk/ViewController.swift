@@ -74,12 +74,19 @@ class ViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         guard let capital = view.annotation as? Capital else { return }
-        let placeName = capital.title
-        let placeInfo = capital.info
-
-        let ac = UIAlertController(title: placeName, message: placeInfo, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .default))
-        present(ac, animated: true)
+        guard let placeName = capital.title else { return }
+        
+//        let ac = UIAlertController(title: placeName, message: placeInfo, preferredStyle: .alert)
+//        ac.addAction(UIAlertAction(title: "OK", style: .default))
+//        present(ac, animated: true)
+        
+        if let vc = storyboard?.instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController {
+            vc.title = placeName
+            
+            let pathString = "https://en.wikipedia.org/wiki/" + placeName
+            vc.url = URL(string: pathString)
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }
 
