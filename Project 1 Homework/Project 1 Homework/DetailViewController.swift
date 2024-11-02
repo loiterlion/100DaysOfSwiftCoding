@@ -24,6 +24,8 @@ class DetailViewController: UIViewController {
             imageView.image = UIImage(named: imageToLoad)
         }
         
+        assert(imageView != nil, "no image error")
+        
         navigationItem.largeTitleDisplayMode = .never
         
         
