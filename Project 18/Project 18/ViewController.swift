@@ -29,6 +29,14 @@ class ViewController: UIViewController {
         
         var dog = animal as? Dog
         print(dog)
+        
+        let displayLink = CADisplayLink(target: self, selector: #selector(update))
+        displayLink.add(to: .current, forMode: .common)
+        
+    }
+    
+    @objc func update() {
+        print("displayLink refreshed...")
     }
     
     
