@@ -14,9 +14,94 @@ class ActionViewController: UIViewController {
     
     var pageTitle = ""
     var pageURL = ""
+    
+    lazy var script2 =
+"""
+function addHeaderText(text, fontSize = '40px') {
+    // Create new div element
+    const headerDiv = document.createElement('div');
+    
+    // Set the text content
+    headerDiv.textContent = text;
+    
+    // Style the div
+    headerDiv.style.cssText = `
+        font-size: ${fontSize};
+        text-align: center;
+        padding: 20px;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    `;
+    
+    // Add to the beginning of the body
+    document.body.insertBefore(headerDiv, document.body.firstChild);
+    
+    // Add padding to body to prevent overlap
+    document.body.style.paddingTop =
+        (parseInt(fontSize) + 40) + 'px'; // Account for padding
+}
+
+// Usage:
+addHeaderText('Hello friend');
+"""
+    
+    // Use javascript to show an alert with a button, when clicked jump to www.apple.com and
+    // make the button show in front of the page. Created by claude.com
+    lazy var script3 =
+"""
+  const button = document.createElement('button');
+    button.textContent = 'Visit Apple';
+    
+    button.style.cssText = `
+        /* Positioning */
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        
+        /* Styling */
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    `;
+    
+    button.addEventListener('mouseover', function() {
+        this.style.backgroundColor = '#004499';
+        this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
+    });
+    
+    button.addEventListener('mouseout', function() {
+        this.style.backgroundColor = '#0066cc';
+        this.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+    });
+    
+    button.addEventListener('click', function() {
+        if (confirm('Would you like to visit Apple.com?')) {
+            window.location.href = 'https://www.apple.com';
+        }
+    });
+    
+    document.body.appendChild(button);
+"""
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptToChooseScript))
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
         
         let notificationCenter = NotificationCenter.default
@@ -58,6 +143,30 @@ class ActionViewController: UIViewController {
         script.scrollIndicatorInsets = script.contentInset
         script.scrollRangeToVisible(script.selectedRange)
     }
+    
+    @objc func promptToChooseScript() {
+        let ac = UIAlertController(title: "Choose a script", message: "Please choose a script", preferredStyle: .actionSheet)
+        
+        
+        let action1 = UIAlertAction(title: "Show website title", style: .default, handler: { [weak self] _ in
+            self?.script.text = "alert(document.title)"
+        })
+        
+        let action2 = UIAlertAction(title: "Add a label at page top", style: .default, handler: { [weak self] _ in
+            self?.script.text = self?.script2
+        })
+        
+        let action3 = UIAlertAction(title: "Add a button to jump to apple.com", style: .default, handler: { [weak self] _ in
+            self?.script.text = self?.script3
+        })
+        ac.addAction(action1)
+        ac.addAction(action2)
+        ac.addAction(action3)
+        
+        present(ac, animated: true, completion: nil)
+    }
+    
+    
 
     @IBAction func done() {
         let item = NSExtensionItem()
