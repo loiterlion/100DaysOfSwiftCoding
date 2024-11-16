@@ -108,8 +108,6 @@ addHeaderText('Hello friend');
         notificationCenter.addObserver(self, selector: #selector(adjust), name: UIResponder.keyboardWillHideNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(adjust), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         
-        
-        
         if let inputItem = extensionContext?.inputItems.first as? NSExtensionItem {
             if let itemProvider = inputItem.attachments?.first {
                 
@@ -117,9 +115,16 @@ addHeaderText('Hello friend');
                     guard let itemDictionay = dict as? NSDictionary else { return }
                     guard let javaScriptValues = itemDictionay[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary else { return }
                     self?.pageTitle = javaScriptValues["title"] as? String ?? ""
+                    self?.pageURL = javaScriptValues["URL"] as? String ?? ""
                     
                     DispatchQueue.main.async {
                         self?.title = self?.pageTitle
+                        
+                        if let pageURL = self?.pageURL,  let urlHost = URL(string: pageURL)?.host  {
+                            if let savedScriptString = UserDefaults.standard.object(forKey: urlHost) as? String {
+                                self?.script.text = savedScriptString
+                            }
+                        }
                     }
                 }
             }
@@ -175,6 +180,10 @@ addHeaderText('Hello friend');
         let customJavaScript = NSItemProvider(item: webDictionary, typeIdentifier: UTType.propertyList.identifier)
         item.attachments = [customJavaScript]
         self.extensionContext!.completeRequest(returningItems: [item])
+        
+        if let hostURL = URL(string: pageURL), let hostString = hostURL.host {
+            UserDefaults.standard.set(script.text, forKey: hostString)
+        }
     }
 
 }
