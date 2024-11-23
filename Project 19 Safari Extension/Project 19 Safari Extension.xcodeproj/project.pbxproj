@@ -19,6 +19,7 @@
 		3217CA3D2CDA49C600D6EF3A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3217CA3B2CDA49C600D6EF3A /* MainInterface.storyboard */; };
 		3217CA412CDA49C600D6EF3A /* Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3217CA322CDA49C600D6EF3A /* Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3217CA472CDA509F00D6EF3A /* Action.js in Resources */ = {isa = PBXBuildFile; fileRef = 3217CA462CDA509F00D6EF3A /* Action.js */; };
+		32A74AF22CE9E6980038F1A9 /* RootTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A74AF12CE9E6980038F1A9 /* RootTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		3217CA3C2CDA49C600D6EF3A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		3217CA3E2CDA49C600D6EF3A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3217CA462CDA509F00D6EF3A /* Action.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Action.js; sourceTree = "<group>"; };
+		32A74AF12CE9E6980038F1A9 /* RootTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 			children = (
 				3217CA372CDA49C600D6EF3A /* Media.xcassets */,
 				3217CA392CDA49C600D6EF3A /* ActionViewController.swift */,
+				32A74AF12CE9E6980038F1A9 /* RootTableViewController.swift */,
 				3217CA3B2CDA49C600D6EF3A /* MainInterface.storyboard */,
 				3217CA3E2CDA49C600D6EF3A /* Info.plist */,
 				3217CA462CDA509F00D6EF3A /* Action.js */,
@@ -250,6 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3217CA3A2CDA49C600D6EF3A /* ActionViewController.swift in Sources */,
+				32A74AF22CE9E6980038F1A9 /* RootTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
