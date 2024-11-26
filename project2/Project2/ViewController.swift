@@ -6,9 +6,10 @@
 //  Copyright © 2016 Paul Hudson. All rights reserved.
 //
 
+import NotificationCenter
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UNUserNotificationCenterDelegate {
 	@IBOutlet var button1: UIButton!
 	@IBOutlet var button2: UIButton!
 	@IBOutlet var button3: UIButton!
@@ -21,6 +22,12 @@ class ViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+        
+//        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { [unowned self] _ in
+            registerLocalNotification()
+            scheduleLocalNotificationWith(timeInterval: 0)
+//        }
+        
 
 		button1.layer.borderWidth = 1
 		button2.layer.borderWidth = 1
@@ -42,6 +49,86 @@ class ViewController: UIViewController {
 		askQuestion()
         
 	}
+    
+    func showAlert(title: String, message: String) {
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        present(ac, animated: true, completion: nil)
+    }
+    
+    func registerLocalNotification() {
+        let center = UNUserNotificationCenter.current()
+        
+        center.requestAuthorization(options: [.alert, .badge, .sound]) { [weak self] granted, error in
+            if granted {
+                DispatchQueue.main.async {
+                    self?.showAlert(title: "Yes, notification allowed", message: "You can received notif")
+                }
+                
+            } else {
+                DispatchQueue.main.async {
+                    self?.showAlert(title: "No, notification disallowed", message: "You can set up notification in the system setting")
+                }
+            }
+        }
+    }
+    
+    func scheduleLocalNotificationWith(timeInterval: TimeInterval) {
+        registerCategories()
+        
+        let center = UNUserNotificationCenter.current()
+        
+        center.removeAllPendingNotificationRequests()
+        
+
+        
+        for i in [7, 30, 60] {
+            let content = UNMutableNotificationContent()
+            content.title = "Come to play \(i)"
+            content.body = "You'll get better at guessing the flags!"
+            content.categoryIdentifier = "guessFlags"
+            content.userInfo = ["customData": "information"]
+//            var dateComponents = DateComponents()
+//            dateComponents.second = i
+//            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(i), repeats: false)
+            
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+            center.add(request)
+        }
+        
+        
+    }
+    
+    func registerCategories() {
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        
+        let show = UNNotificationAction(identifier: "play", title: "play Guss the flag game", options: .foreground)
+        let category = UNNotificationCategory(identifier: "guessFlags", actions: [show], intentIdentifiers: [], options: [])
+        
+        center.setNotificationCategories([category])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        if let customData = userInfo["customData"] as? String {
+            print("customData: \(customData)")
+            
+            switch response.actionIdentifier {
+            case UNNotificationDefaultActionIdentifier, "play":
+                print("You finally come here")
+                showAlert(title: "You finally come here", message: "")
+                scheduleLocalNotificationWith(timeInterval: 0)
+            default:
+                break
+            }
+            
+            completionHandler()
+        }
+    }
     
     @objc func showCurrentScore() {
         let ac = UIAlertController(title: "Curren Score", message: "Your current score: \(score)", preferredStyle: .alert)
