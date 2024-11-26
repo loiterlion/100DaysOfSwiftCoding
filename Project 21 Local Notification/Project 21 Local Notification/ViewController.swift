@@ -30,8 +30,12 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
             }
         }
     }
-
+    
     @objc func scheduleLocal() {
+        scheduleLocalWith(timeInterval: 5)
+    }
+
+    func scheduleLocalWith(timeInterval: TimeInterval) {
         registerCategories()
         
         let center = UNUserNotificationCenter.current()
@@ -50,7 +54,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
         dateComponent.minute = 30
 //        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponent, repeats: true)
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         center.add(request)
@@ -61,11 +65,19 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
         center.delegate = self
         
         let show  = UNNotificationAction(identifier: "show", title: "Tell me more...", options: .foreground)
-        let category = UNNotificationCategory(identifier: "alarm", actions: [show], intentIdentifiers: [], options: [])
         
+        let showAfterOneDay  = UNNotificationAction(identifier: "showAfterOneDay", title: "Please show again a day after now", options: .foreground)
+
+        let category = UNNotificationCategory(identifier: "alarm", actions: [show, showAfterOneDay], intentIdentifiers: [], options: [])
+                
         center.setNotificationCategories([category])
     }
     
+    func showAC(title: String, message: String) {
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        present(ac, animated: true, completion: nil)
+    }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
@@ -75,8 +87,14 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
             switch response.actionIdentifier {
             case UNNotificationDefaultActionIdentifier:
                 print("Default identifier")
+                showAC(title: "Default identifer", message: "...")
             case "show":
                 print("show more information")
+                showAC(title: "Show more information", message: "Custom Data: \(customData)")
+                
+            case "showAfterOneDay":
+                print("showAfterOneDay")
+                scheduleLocalWith(timeInterval: 10)
             default:
                 break
             }
