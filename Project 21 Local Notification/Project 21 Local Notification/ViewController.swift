@@ -54,6 +54,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
         dateComponent.minute = 30
 //        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponent, repeats: true)
         
+        
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
         
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)

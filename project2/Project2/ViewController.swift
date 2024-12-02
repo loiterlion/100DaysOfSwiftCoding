@@ -106,7 +106,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
         let center = UNUserNotificationCenter.current()
         center.delegate = self
         
-        let show = UNNotificationAction(identifier: "play", title: "play Guss the flag game", options: .foreground)
+        let show = UNNotificationAction(identifier: "play", title: "Play guess the flag game", options: .foreground)
         let category = UNNotificationCategory(identifier: "guessFlags", actions: [show], intentIdentifiers: [], options: [])
         
         center.setNotificationCategories([category])
