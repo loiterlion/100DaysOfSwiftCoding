@@ -120,7 +120,7 @@ class GameScene: SKScene {
         let nodesAtPoint = nodes(at: location)
         
         for case let node as SKSpriteNode in nodesAtPoint {
-            if node.name == "enemy" {
+            if node.name == "enemy" || node.name == "enemyBlue" {
                 // destroy the penguin
                 if let emitter = SKEmitterNode(fileNamed: "sliceHitEnemy") {
                     emitter.position = node.position
@@ -188,6 +188,8 @@ class GameScene: SKScene {
             livesImages[1].texture = SKTexture(imageNamed: "sliceLifeGone")
             livesImages[2].texture = SKTexture(imageNamed: "sliceLifeGone")
         }
+        
+        showGameOver()
     }
     
     func playSwooshSound() {
@@ -284,37 +286,45 @@ class GameScene: SKScene {
                 emitter.position = CGPoint(x: 76, y: 64)
                 enemy.addChild(emitter)
             }
+        } else if enemyType == 2 {
+            enemy = SKSpriteNode(imageNamed: "penguinBlue")
+            run(SKAction.playSoundFileNamed("launch.caf", waitForCompletion: false))
+            enemy.name = "enemyBlue"
         } else {
             enemy = SKSpriteNode(imageNamed: "penguin")
             run(SKAction.playSoundFileNamed("launch.caf", waitForCompletion: false))
             enemy.name = "enemy"
         }
             
-            let randomPosition = CGPoint(x: Int.random(in: 64...960), y: -128)
-            enemy.position = randomPosition
-            
-            let randomAngualrVelocity = CGFloat.random(in: -3...3)
-            let randomXVelocity: Int
-            
-            if randomPosition.x < 256 {
-                randomXVelocity = Int.random(in: 8...15)
-            } else if randomPosition.x < 512 {
-                randomXVelocity = Int.random(in: 3...5)
-            } else if randomPosition.x < 768 {
-                randomXVelocity = -Int.random(in: 3...5)
-            } else {
-                randomXVelocity = -Int.random(in: 24...32)
-            }
-            
-            let enemyYVelocity = Int.random(in: 24...32)
-            
-            enemy.physicsBody = SKPhysicsBody(circleOfRadius: 64)
-            enemy.physicsBody?.velocity = CGVector(dx: randomXVelocity * 40, dy: enemyYVelocity * 40)
-            enemy.physicsBody?.angularVelocity = randomAngualrVelocity
-            enemy.physicsBody?.collisionBitMask = 0
-            
-            addChild(enemy)
-            activeEnemies.append(enemy)
+        let randomPosition = CGPoint(x: Int.random(in: 64...960), y: -128)
+        enemy.position = randomPosition
+        
+        let randomAngualrVelocity = CGFloat.random(in: -3...3)
+        let randomXVelocity: Int
+        
+        if randomPosition.x < 256 {
+            randomXVelocity = Int.random(in: 8...15)
+        } else if randomPosition.x < 512 {
+            randomXVelocity = Int.random(in: 3...5)
+        } else if randomPosition.x < 768 {
+            randomXVelocity = -Int.random(in: 3...5)
+        } else {
+            randomXVelocity = -Int.random(in: 8...15)
+        }
+        
+        let enemyYVelocity = Int.random(in: 24...32)
+        
+        enemy.physicsBody = SKPhysicsBody(circleOfRadius: 64)
+        enemy.physicsBody?.velocity = CGVector(dx: randomXVelocity * 40, dy: enemyYVelocity * 40)
+        
+        if enemyType == 2 {
+            enemy.physicsBody?.velocity = CGVector(dx: randomXVelocity * 45, dy: enemyYVelocity * 45)
+        }
+        enemy.physicsBody?.angularVelocity = randomAngualrVelocity
+        enemy.physicsBody?.collisionBitMask = 0
+        
+        addChild(enemy)
+        activeEnemies.append(enemy)
         
     }
     
@@ -346,7 +356,7 @@ class GameScene: SKScene {
                 if node.position.y < -140 {
                     node.removeAllActions()
                     
-                    if node.name == "enemy" {
+                    if node.name == "enemy" || node.name == "enemyBlue"{
                         node.name = ""
                         subtractlife()
                         
@@ -449,5 +459,23 @@ class GameScene: SKScene {
         
         sequencePosition += 1
         nextSequenceQueued = false
+    }
+    
+    func showGameOver() {
+        // Create the Game Over sprite node
+        let gameOverNode = SKSpriteNode(imageNamed: "gameOver")
+        
+        // Set its size (optional)
+        gameOverNode.size = CGSize(width: 300, height: 150) // Adjust as needed
+        
+        // Position it in the center of the scene
+        gameOverNode.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        
+        // Add it to the scene
+        addChild(gameOverNode)
+        
+        // Optional: Add a fade-in effect for the "Game Over" node
+        let fadeIn = SKAction.fadeIn(withDuration: 1.0)
+        gameOverNode.run(fadeIn)
     }
 }
