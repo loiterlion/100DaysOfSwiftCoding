@@ -15,6 +15,8 @@
 		320FF7F12D43212400B13B55 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 320FF7EF2D43212400B13B55 /* LaunchScreen.storyboard */; };
 		324CA3692D43EE5100A73514 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324CA3682D43EE5100A73514 /* GameScene.swift */; };
 		324CA36B2D43EEC100A73514 /* level1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 324CA36A2D43EEC100A73514 /* level1.txt */; };
+		329994582D6C693B0051EA11 /* level2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 329994562D6C693B0051EA11 /* level2.txt */; };
+		329994592D6C693B0051EA11 /* level3.txt in Resources */ = {isa = PBXBuildFile; fileRef = 329994572D6C693B0051EA11 /* level3.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		320FF7F02D43212400B13B55 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		324CA3682D43EE5100A73514 /* GameScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		324CA36A2D43EEC100A73514 /* level1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = level1.txt; sourceTree = "<group>"; };
+		329994562D6C693B0051EA11 /* level2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = level2.txt; sourceTree = "<group>"; };
+		329994572D6C693B0051EA11 /* level3.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = level3.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,8 @@
 				320FF7ED2D43212400B13B55 /* Assets.xcassets */,
 				320FF7EF2D43212400B13B55 /* LaunchScreen.storyboard */,
 				324CA36A2D43EEC100A73514 /* level1.txt */,
+				329994562D6C693B0051EA11 /* level2.txt */,
+				329994572D6C693B0051EA11 /* level3.txt */,
 			);
 			path = "Project 26 Core Motion";
 			sourceTree = "<group>";
@@ -129,8 +135,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				329994592D6C693B0051EA11 /* level3.txt in Resources */,
 				324CA36B2D43EEC100A73514 /* level1.txt in Resources */,
 				320FF7EC2D43212000B13B55 /* Main.storyboard in Resources */,
+				329994582D6C693B0051EA11 /* level2.txt in Resources */,
 				320FF7E32D43212000B13B55 /* GameScene.sks in Resources */,
 				320FF7EE2D43212400B13B55 /* Assets.xcassets in Resources */,
 				320FF7F12D43212400B13B55 /* LaunchScreen.storyboard in Resources */,
